@@ -162,4 +162,60 @@ bTbl[, .SD
      ][, cTbl[.SD, GOPerAO := i.N, on=.(player)]
      ]
 
+bTbl[, .SD
+     ][!is.na(value)
+     ][, num := hasChars(value, c("1", "2", '3', '4'))
+     ][, den := grepl("B.*B.*B.*B", value) + hasChars(value, c('H', 'X'))
+     ][, .(N=sum(num) / (.N - sum(den))), .(player)
+     ][, cTbl[.SD, BA := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, num := grepl('1', value) * 1 + grepl('2', value) * 2 + grepl('3', value) * 3 + grepl('4', value) * 4
+     ][, den := hasChars(value, c('1', '2', '3', '4', 'A', 'G'))
+     ][, .(N=sum(num) / sum(den)), .(player)
+     ][, cTbl[.SD, SLG := i.N, on=.(player)]
+     ]
+
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=sum(hasChars(value, c('1', '2', '3', '4', 'H')) + grepl('B.*B.*B.*B', value)) / .N), .(player)
+     ][, cTbl[.SD, OBP := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, num1 := sum(grepl('1', value) * 1 + grepl('2', value) * 2 + grepl('3', value) * 3 + grepl('4', value) * 4), .(player)
+     ][, num2 := sum(hasChars(value, c('1', '2', '3', '4', 'H')) + grepl('B.*B.*B.*B', value)), .(player)
+     ][, den1 := sum(hasChars(value, c('1', '2', '3', '4', 'A', 'G'))), .(player)
+     ][, den2 := .N, .(player)
+     ][, .(N=num1/den1 + num2/den2), .(player, num1, den1, num2, den2)
+     ][, cTbl[.SD, OPS := i.N, on=.(player)]
+     ]
+
+
+
+
 cTbl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
