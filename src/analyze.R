@@ -235,8 +235,8 @@ bTbl[, .SD
      ][, cTbl[.SD, `_3` := sprintf('+%s', i.N), on=.(player)]
      ]
 
-allCharsCount <- function(value, x, num) {
-	Reduce('*', lapply(x, function(x) countChars(value, x) == num))
+allCharsCount <- function(value, x) {
+	Reduce('*', lapply(1:length(x), function(i) countChars(value, names(x)[i]) == x[i]))
 }
 
 sumNums <- function(zTbl) {
@@ -244,102 +244,101 @@ sumNums <- function(zTbl) {
 	zTbl[, cNames, with=F][, Reduce('+', .SD)]
 }
 
-getTB <- function(bTbl, bCount) {
+
+getTB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	bTbl[, .SD
-	     ][, num1 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '1', 1)
-	     ][, num2 := 2 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '2', 1)
-	     ][, num3 := 3 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '3', 1)
-	     ][, num4 := 4 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '4', 1)
+	     ][, num1 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '1'=1))
+	     ][, num2 := 2 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '2'=1))
+	     ][, num3 := 3 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '3'=1))
+	     ][, num4 := 4 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '4'=1))
 	     ][, .(N=sum(sumNums(.SD))), .(player)
 	     ]
 }
 
-getAB <- function(bTbl, bCount) {
+getAB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	bTbl[, .SD
-	     ][, num1 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '1', 1)
-	     ][, num2 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '2', 1)
-	     ][, num3 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '3', 1)
-	     ][, num4 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '4', 1)
-	     ][, num5 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, 'A', 1)
-	     ][, num6 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, 'G', 1)
+	     ][, num1 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '1'=1))
+	     ][, num2 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '2'=1))
+	     ][, num3 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '3'=1))
+	     ][, num4 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '4'=1))
+	     ][, num5 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'A'=1))
+	     ][, num6 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'G'=1))
 	     ][, .(N=sum(sumNums(.SD))), .(player)
 	     ]
 }
 	
-	     
-getOB <- function(bTbl, bCount) {
+getOB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	bTbl[, .SD
-	     ][, num1 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '1', 1)
-	     ][, num2 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '2', 1)
-	     ][, num3 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '3', 1)
-	     ][, num4 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '4', 1)
-	     ][, num5 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, 'H', 1)
+	     ][, num1 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '1'=1))
+	     ][, num2 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '2'=1))
+	     ][, num3 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '3'=1))
+	     ][, num4 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '4'=1))
+	     ][, num5 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'H'=1))
 	     ][, .(N=sum(sumNums(.SD))), .(player)
 	     ]
 }
 
-getNB <- function(bTbl, bCount) {
+getNB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	bTbl[, .SD
-	     ][, num1 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '1', 1)
-	     ][, num2 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '2', 1)
-	     ][, num3 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '3', 1)
-	     ][, num4 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, '4', 1)
-	     ][, num5 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, 'H', 1)
-	     ][, num6 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, 'A', 1)
-	     ][, num7 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, 'G', 1)
-	     ][, num8 := 1 * allCharsCount(value, c('B'), bCount) * allCharsCount(value, c('K', 'S', 'F'), 0) * allCharsCount(value, 'X', 1)
+	     ][, num1 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '1'=1))
+	     ][, num2 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '2'=1))
+	     ][, num3 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '3'=1))
+	     ][, num4 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '4'=1))
+	     ][, num5 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'H'=1))
+	     ][, num6 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'A'=1))
+	     ][, num7 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'G'=1))
+	     ][, num8 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'X'=1))
 	     ][, .(N=sum(sumNums(.SD))), .(player)
 	     ]
 }
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getTB(.SD, 0)
+     ][, getTB(.SD, 0, 0, 0, 0)
      ][, cTbl[.SD, TB_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getAB(.SD, 0)
+     ][, getAB(.SD, 0, 0, 0, 0)
      ][, cTbl[.SD, AB_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 0)
+     ][, getOB(.SD, 0, 0, 0, 0)
      ][, cTbl[.SD, OB_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 0)
+     ][, getNB(.SD, 0, 0, 0, 0)
      ][, cTbl[.SD, `_4` := i.N, on=.(player)]
      ]
-
 
 cTbl[, `0_0_OPS` := TB_0/AB_0 + OB_0/`_4`]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getTB(.SD, 1)
+     ][, getTB(.SD, 1, 0, 0, 0)
      ][, cTbl[.SD, TB_1 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getAB(.SD, 1) 
+     ][, getAB(.SD, 1, 0, 0, 0) 
      ][, cTbl[.SD, AB_1 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 1)
+     ][, getOB(.SD, 1, 0, 0, 0)
      ][, cTbl[.SD, OB_1 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 1)
+     ][, getNB(.SD, 1, 0, 0, 0)
      ][, cTbl[.SD, `_5` := i.N, on=.(player)]
      ]
 
@@ -347,25 +346,25 @@ cTbl[, `1_0_OPS` := TB_1/AB_1 + OB_1/`_5`]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getTB(.SD, 2)
+     ][, getTB(.SD, 2, 0, 0, 0)
      ][, cTbl[.SD, TB_2 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getAB(.SD, 2) 
+     ][, getAB(.SD, 2, 0, 0, 0) 
      ][, cTbl[.SD, AB_2 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 2)
+     ][, getOB(.SD, 2, 0, 0, 0)
      ][, cTbl[.SD, OB_2 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 2)
+     ][, getNB(.SD, 2, 0, 0, 0)
      ][, cTbl[.SD, `_6` := i.N, on=.(player)]
      ]
 
@@ -373,25 +372,25 @@ cTbl[, `2_0_OPS` := TB_2/AB_2 + OB_2/`_6`]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getTB(.SD, 3)
+     ][, getTB(.SD, 3, 0, 0, 0)
      ][, cTbl[.SD, TB_3 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getAB(.SD, 3) 
+     ][, getAB(.SD, 3, 0, 0, 0) 
      ][, cTbl[.SD, AB_3 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 3)
+     ][, getOB(.SD, 3, 0, 0, 0)
      ][, cTbl[.SD, OB_3 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 3)
+     ][, getNB(.SD, 3, 0, 0, 0)
      ][, cTbl[.SD, `_7` := i.N, on=.(player)]
      ]
 
