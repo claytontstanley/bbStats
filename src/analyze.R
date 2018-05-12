@@ -251,7 +251,7 @@ getTB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	     ][, num2 := 2 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '2'=1))
 	     ][, num3 := 3 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '3'=1))
 	     ][, num4 := 4 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '4'=1))
-	     ][, .(N=sum(sumNums(.SD))), .(player)
+	     ][, sum(sumNums(.SD))
 	     ]
 }
 
@@ -263,7 +263,7 @@ getAB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	     ][, num4 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '4'=1))
 	     ][, num5 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'A'=1))
 	     ][, num6 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'G'=1))
-	     ][, .(N=sum(sumNums(.SD))), .(player)
+	     ][, sum(sumNums(.SD))
 	     ]
 }
 	
@@ -274,7 +274,7 @@ getOB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	     ][, num3 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '3'=1))
 	     ][, num4 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, '4'=1))
 	     ][, num5 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'H'=1))
-	     ][, .(N=sum(sumNums(.SD))), .(player)
+	     ][, sum(sumNums(.SD))
 	     ]
 }
 
@@ -288,117 +288,231 @@ getNB <- function(bTbl, BCount, KCount, SCount, FCount) {
 	     ][, num6 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'A'=1))
 	     ][, num7 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'G'=1))
 	     ][, num8 := 1 * allCharsCount(value, c(B=BCount, K=KCount, S=SCount, F=FCount, 'X'=1))
-	     ][, .(N=sum(sumNums(.SD))), .(player)
+	     ][, sum(sumNums(.SD))
 	     ]
 }
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getTB(.SD, 0, 0, 0, 0)
-     ][, cTbl[.SD, TB_0 := i.N, on=.(player)]
+     ][, .(N=getTB(.SD, 0, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, TB_0_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getAB(.SD, 0, 0, 0, 0)
-     ][, cTbl[.SD, AB_0 := i.N, on=.(player)]
+     ][, .(N=getAB(.SD, 0, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, AB_0_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 0, 0, 0, 0)
-     ][, cTbl[.SD, OB_0 := i.N, on=.(player)]
+     ][, .(N=getOB(.SD, 0, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, OB_0_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 0, 0, 0, 0)
-     ][, cTbl[.SD, `_4` := i.N, on=.(player)]
+     ][, .(N=getNB(.SD, 0, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, NB_0_0 := i.N, on=.(player)]
      ]
 
-cTbl[, `0_0_OPS` := TB_0/AB_0 + OB_0/`_4`]
+cTbl[, `0_0_OPS` := TB_0_0/AB_0_0 + OB_0_0/NB_0_0]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getTB(.SD, 1, 0, 0, 0)
-     ][, cTbl[.SD, TB_1 := i.N, on=.(player)]
-     ]
-
-bTbl[, .SD
-     ][!is.na(value)
-     ][, getAB(.SD, 1, 0, 0, 0) 
-     ][, cTbl[.SD, AB_1 := i.N, on=.(player)]
+     ][, .(N=getTB(.SD, 1, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, TB_1_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 1, 0, 0, 0)
-     ][, cTbl[.SD, OB_1 := i.N, on=.(player)]
+     ][, .(N=getAB(.SD, 1, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, AB_1_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 1, 0, 0, 0)
-     ][, cTbl[.SD, `_5` := i.N, on=.(player)]
-     ]
-
-cTbl[, `1_0_OPS` := TB_1/AB_1 + OB_1/`_5`]
-
-bTbl[, .SD
-     ][!is.na(value)
-     ][, getTB(.SD, 2, 0, 0, 0)
-     ][, cTbl[.SD, TB_2 := i.N, on=.(player)]
+     ][, .(N=getOB(.SD, 1, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, OB_1_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getAB(.SD, 2, 0, 0, 0) 
-     ][, cTbl[.SD, AB_2 := i.N, on=.(player)]
+     ][, .(N=getNB(.SD, 1, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, NB_1_0 := i.N, on=.(player)]
+     ]
+
+cTbl[, `1_0_OPS` := TB_1_0/AB_1_0 + OB_1_0/NB_1_0]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getTB(.SD, 2, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, TB_2_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 2, 0, 0, 0)
-     ][, cTbl[.SD, OB_2 := i.N, on=.(player)]
+     ][, .(N=getAB(.SD, 2, 0, 0, 0)), .(player) 
+     ][, cTbl[.SD, AB_2_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 2, 0, 0, 0)
-     ][, cTbl[.SD, `_6` := i.N, on=.(player)]
-     ]
-
-cTbl[, `2_0_OPS` := TB_2/AB_2 + OB_2/`_6`]
-
-bTbl[, .SD
-     ][!is.na(value)
-     ][, getTB(.SD, 3, 0, 0, 0)
-     ][, cTbl[.SD, TB_3 := i.N, on=.(player)]
+     ][, .(N=getOB(.SD, 2, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, OB_2_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getAB(.SD, 3, 0, 0, 0) 
-     ][, cTbl[.SD, AB_3 := i.N, on=.(player)]
+     ][, .(N=getNB(.SD, 2, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, NB_2_0 := i.N, on=.(player)]
+     ]
+
+cTbl[, `2_0_OPS` := TB_2_0/AB_2_0 + OB_2_0/NB_2_0]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getTB(.SD, 3, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, TB_3_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getOB(.SD, 3, 0, 0, 0)
-     ][, cTbl[.SD, OB_3 := i.N, on=.(player)]
+     ][, .(N=getAB(.SD, 3, 0, 0, 0)), .(player) 
+     ][, cTbl[.SD, AB_3_0 := i.N, on=.(player)]
      ]
 
 bTbl[, .SD
      ][!is.na(value)
-     ][, getNB(.SD, 3, 0, 0, 0)
-     ][, cTbl[.SD, `_7` := i.N, on=.(player)]
+     ][, .(N=getOB(.SD, 3, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, OB_3_0 := i.N, on=.(player)]
      ]
 
-cTbl[, `3_0_OPS` := TB_3/AB_3 + OB_3/`_7`]
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getNB(.SD, 3, 0, 0, 0)), .(player)
+     ][, cTbl[.SD, NB_3_0 := i.N, on=.(player)]
+     ]
 
+cTbl[, `3_0_OPS` := TB_3_0/AB_3_0 + OB_3_0/NB_3_0]
 
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=sum(allCharsCount(value, c(B=4, K=0, S=0, F=0)))), .(player)
+     ][, cTbl[.SD, `_4` := NB_3_0 + i.N, on=.(player)]
+     ]
 
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getTB(.SD, 0, 1, 0, 0) + getTB(.SD, 0, 0, 1, 0) + getTB(.SD, 0, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, TB_0_1 := i.N, on=.(player)]
+     ]
 
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getAB(.SD, 0, 1, 0, 0) + getAB(.SD, 0, 0, 1, 0) + getAB(.SD, 0, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, AB_0_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getOB(.SD, 0, 1, 0, 0) + getOB(.SD, 0, 0, 1, 0) + getOB(.SD, 0, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, OB_0_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getNB(.SD, 0, 1, 0, 0) + getNB(.SD, 0, 0, 1, 0) + getNB(.SD, 0, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, NB_0_1 := i.N, on=.(player)]
+     ]
+
+cTbl[, `0_1_OPS` := TB_0_1/AB_0_1 + OB_0_1/NB_0_1]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getTB(.SD, 1, 1, 0, 0) + getTB(.SD, 1, 0, 1, 0) + getTB(.SD, 1, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, TB_1_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getAB(.SD, 1, 1, 0, 0) + getAB(.SD, 1, 0, 1, 0) + getAB(.SD, 1, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, AB_1_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getOB(.SD, 1, 1, 0, 0) + getOB(.SD, 1, 0, 1, 0) + getOB(.SD, 1, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, OB_1_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getNB(.SD, 1, 1, 0, 0) + getNB(.SD, 1, 0, 1, 0) + getNB(.SD, 1, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, NB_1_1 := i.N, on=.(player)]
+     ]
+
+cTbl[, `1_1_OPS` := TB_1_1/AB_1_1 + OB_1_1/NB_1_1]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getTB(.SD, 2, 1, 0, 0) + getTB(.SD, 2, 0, 1, 0) + getTB(.SD, 2, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, TB_2_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getAB(.SD, 2, 1, 0, 0) + getAB(.SD, 2, 0, 1, 0) + getAB(.SD, 2, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, AB_2_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getOB(.SD, 2, 1, 0, 0) + getOB(.SD, 2, 0, 1, 0) + getOB(.SD, 2, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, OB_2_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getNB(.SD, 2, 1, 0, 0) + getNB(.SD, 2, 0, 1, 0) + getNB(.SD, 2, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, NB_2_1 := i.N, on=.(player)]
+     ]
+
+cTbl[, `2_1_OPS` := TB_2_1/AB_2_1 + OB_2_1/NB_2_1]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getTB(.SD, 3, 1, 0, 0) + getTB(.SD, 3, 0, 1, 0) + getTB(.SD, 3, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, TB_3_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getAB(.SD, 3, 1, 0, 0) + getAB(.SD, 3, 0, 1, 0) + getAB(.SD, 3, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, AB_3_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getOB(.SD, 3, 1, 0, 0) + getOB(.SD, 3, 0, 1, 0) + getOB(.SD, 3, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, OB_3_1 := i.N, on=.(player)]
+     ]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=getNB(.SD, 3, 1, 0, 0) + getNB(.SD, 3, 0, 1, 0) + getNB(.SD, 3, 0, 0, 1)), .(player)
+     ][, cTbl[.SD, NB_3_1 := i.N, on=.(player)]
+     ]
+
+cTbl[, `3_1_OPS` := TB_3_1/AB_3_1 + OB_3_1/NB_3_1]
+
+bTbl[, .SD
+     ][!is.na(value)
+     ][, .(N=sum(allCharsCount(value, c(B=4, K=1, S=0, F=0)) + allCharsCount(value, c(B=4, K=0, S=1, F=0)) + allCharsCount(value, c(B=4, K=0, S=0, F=1)))), .(player)
+     ][, cTbl[.SD, `_5` := NB_3_1 + i.N, on=.(player)]
+     ]
+
+cTbl
 
 
 
