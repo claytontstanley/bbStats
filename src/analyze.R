@@ -44,6 +44,18 @@ aTbl[, .SD
      ][, {db$colOff1 <<- colOff1}
      ]
 
+aTbl[, .SD
+     ][, .(rowOff4=which(grepl("Lone Stars Runs", `Lone Stars Baseball`)) - 1)
+     ][, {db$rowOff4 <<- rowOff4}
+     ]
+
+aTbl[, .SD
+     ][, .(rowOff5=which(grepl("Opponent PO/CS/TO", `Lone Stars Baseball`)) + 1)
+     ][, {db$rowOff5 <<- rowOff5}
+     ]
+
+db
+
 rollForward <- function(x) {
 	zTbl = data.table(player=x, rowid=1:length(x))
 	pTbl = zTbl[!is.na(player)] 
@@ -636,6 +648,47 @@ cTbl[, `3_2_OPS` := TB_3_2/AB_3_2 + OB_3_2/NB_3_2]
 cTbl[, !(1:15)]
 cTbl[, 1:45]
 
+
+aTbl[, .SD
+     ][ (db$rowOff4+1):(db$rowOff5-1)
+     ][, 1:(db$colOff1-1)
+     ][, setnames(.SD, 'Lone Stars Baseball', 'stat')
+     ][, lapply(.SD, as.character)
+     ][, melt(.SD, id.vars=c('stat'))
+     ][, NVals := sum(!is.na(value)), .(variable)
+     ][, gID := cumsum(NVals == 0)
+     ][, gID := min(gID), .(variable)
+     ][NVals > 0
+     ][, gID := rleid(gID)
+     ][!is.na(stat)
+     ][, N := .N, .(variable)
+     ][, NVals := NULL
+     ][, N := NULL
+     ][is.na(value), value := '0'
+     ][, stat := gsub('\\([0-9]+\\)', '', stat) %>% trimWhite
+     ][, dcast(.SD, variable + gID ~ stat, value.var='value')
+     ][, variable := str_extract(variable, '[0-9]+$')
+     ][, setnames(.SD, 'variable', 'game')
+     ][, lapply(.SD, as.integer)
+     ][, dR := `Lone Stars Runs` - `Opponent Runs`
+     ][, dPB := `Lone Stars PB/WP/DI/SB/BK` - `Opponent PB/WP/DI/SB/BK`
+     ][, dBB := `Lone Stars BB/HBP` - `Opponent BB/HBP`
+     ][, dE := `Opponent Errors` - `Lone Stars Errors`
+     ][, dH := `Lone Stars Hits` - `Opponent Hits`
+     ][, {dTbl <<- copy(.SD); .SD}
+     ]
+
+dTbl[, .SD
+     ][, .(game, dR, dPB, dBB, dE, dH, gID)
+     ][, game := rleid(game), gID
+     ][, melt(.SD, id.vars=c('game', 'gID'))
+     ][, game := factor(game)
+     ][, gID := factor(gID)
+     ][, ggplot(.SD, aes(game, value, group=variable, color=variable))
+     #+ geom_bar(stat='identity', position=position_dodge())
+     + geom_line()
+     + facet_wrap(~ gID, scale='free_x')
+     ]
 
 
 
