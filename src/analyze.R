@@ -677,7 +677,6 @@ dTbl[, .SD
      ][, game := factor(game)
      ][, gID := factor(gID)
      ][, ggplot(.SD, aes(game, value, group=variable, color=variable))
-     #+ geom_bar(stat='identity', position=position_dodge())
      + geom_line()
      + facet_wrap(~ gID, scale='free_x')
      ]
