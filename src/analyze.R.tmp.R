@@ -145,6 +145,7 @@ bTbl[, .SD
      ][, cTbl[.SD, SAC := i.N, on=.(gID)]
      ]
 
+
 countChars <- function(value, x) {
 	Reduce("+", lapply(x, function(i) str_count(value, i)))
 }
@@ -158,6 +159,7 @@ bTbl[, .SD
      ][, .(N=sum(countChars(value, c("B", "K", "S", "F", "A", "G", "X", "H", "1", "2", "3", "4")))), .(gID)
      ][, cTbl[.SD, PPerPA := i.N / PA, on=.(gID)]
      ]
+
 
 bTbl[, .SD
      ][!is.na(value)
